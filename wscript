@@ -52,6 +52,7 @@ def options(opt):
 
     opt.add_option('--without-tools', action='store_false', default=True, dest='with_tools',
                    help='Do not build tools')
+    opt.add_option('--with-vmac', action='store_true', default=False, help='Use Vmac')
 
 def configure(conf):
     conf.start_msg('Building static library')
@@ -155,6 +156,13 @@ def configure(conf):
     # will not appear in the config header, but will instead be passed directly to the
     # compiler on the command line.
     conf.write_config_header('ndn-cxx/detail/config.hpp', define_prefix='NDN_CXX_')
+    if conf.options.with_vmac:
+        if conf.check_cxx(name='libpthread', lib='pthread', uselib_store='LIBPTHREAD', define_name='HAVE_LIBPTHREAD', mandatory=True, errmsg='not found, but required for vmac face support. '):
+	    conf.env['HAVE_LIBPTHREAD'] = True
+        if conf.check_cxx(name='libm', lib='m', uselib_store='LIBM', define_name='HAVE_LIBM', mandatory=True, errmsg='not found, but required for vmac face support. '):
+	    conf.env['HAVE_LIBM'] = True
+        if conf.check_cxx(name='libvmac', lib='vmac', uselib_store='LIBVMAC', define_name='HAVE_LIBVMAC', mandatory=True, errmsg='not found, but required for vmac face support. '):
+	    conf.env['HAVE_LIBVMAC'] = True
 
 def build(bld):
     version(bld)
@@ -200,6 +208,11 @@ def build(bld):
 
     if bld.env.HAVE_NETLINK:
         libndn_cxx['source'] += bld.path.ant_glob('ndn-cxx/**/*netlink*.cpp')
+
+    if bld.env.HAVE_LIBVMAC:
+        libndn_cxx['use'] += ' LIBPTHREAD'
+        libndn_cxx['use'] += ' LIBM'
+        libndn_cxx['use'] += ' LIBVMAC'
 
     # In case we want to make it optional later
     libndn_cxx['source'] += bld.path.ant_glob('ndn-cxx/**/*-sqlite3.cpp')
@@ -301,6 +314,7 @@ def build(bld):
             install_path='${MANDIR}',
             version=VERSION_BASE,
             release=VERSION)
+
 
 def docs(bld):
     from waflib import Options
