@@ -99,7 +99,7 @@ public: // consumer
 
     entry.recordForwarding();
     m_face.m_transport->send(finishEncoding(std::move(lpPacket), interest2.wireEncode(),
-                                            'I', interest2.getName()));
+                                            'I', interest2.getName()), interest2.getName().toUri());
     dispatchInterest(entry, interest2);
   }
 

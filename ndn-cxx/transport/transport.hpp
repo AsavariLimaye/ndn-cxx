@@ -67,6 +67,11 @@ public:
   virtual void
   send(const Block& wire) = 0;
 
+  /** \brief send a TLV block through the transport
+   */
+  virtual void
+  send(const Block& wire, const std::string name) {};
+
   /** \brief send two memory blocks through the transport
    *
    *  Scatter/gather API is utilized to send two non-consecutive memory blocks together

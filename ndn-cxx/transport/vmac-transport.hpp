@@ -66,6 +66,9 @@ public:
   send(const Block& wire) override;
 
   void
+  send(const Block& wire, const std::string name) override;
+
+  void
   send(const Block& header, const Block& payload) override;
 
   /** \brief Create transport with parameters defined in URI

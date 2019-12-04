@@ -32,7 +32,7 @@ NDN_LOG_INIT(ndn.VmacTransport);
 
 void vmac_callback(uint8_t type,uint64_t enc, char* buff, uint16_t len, uint16_t seq, char* interestName, uint16_t interestNameLen)
 {
-  NDN_LOG_INFO("Type: " << type << "  Name: " << interestName << "  Data Len: " << len);
+  NDN_LOG_DEBUG("Type: " << type << "  Name: " << interestName << "  Data Len: " << len);
 }
 
 namespace ndn {
@@ -49,7 +49,7 @@ VmacTransport::initVmac()
 {
   void (*ptr) (uint8_t a, uint64_t b, char* c, uint16_t d, uint16_t e, char* f, uint16_t g) = &vmac_callback;	
   vmac_register((void*) ptr);
-  NDN_LOG_INFO("Vmac Interface Initialized");
+  NDN_LOG_DEBUG("Vmac Interface Initialized");
 }
 
 /*
@@ -110,8 +110,32 @@ VmacTransport::connect(boost::asio::io_service& ioService,
 void
 VmacTransport::send(const Block& wire)
 {
-  NDN_LOG_DEBUG("Sending VMAC");
-  send_vmac(0,0,0,"send_data",9,"send_interest",13);
+  //NDN_LOG_DEBUG("Sending VMAC");
+  //send_vmac(0,0,0,"send_data",9,"send_interest",13);
+  /*
+  BOOST_ASSERT(m_impl != nullptr);
+  m_impl->send(wire);
+  */
+}
+
+void
+VmacTransport::send(const Block& wire, const std::string name)
+{
+
+  ndn::EncodingBuffer enc_buffer(wire);
+  size_t buff_len = enc_buffer.size();
+  size_t interest_len = name.length();
+
+  char buffptr[buff_len + 1];
+  char interest_name[interest_len + 1];
+
+  strncpy(buffptr, (char*) enc_buffer.buf(), buff_len);
+  strncpy(interest_name, name.c_str(), interest_len);
+
+  if (buff_len < 2000){
+    NDN_LOG_DEBUG("send : Sending Interest " << name);
+    send_vmac(0, 0, 0, (char*) buffptr, (uint16_t) buff_len, (char*) interest_name, (uint16_t) interest_len);
+  }
   /*
   BOOST_ASSERT(m_impl != nullptr);
   m_impl->send(wire);
@@ -121,8 +145,8 @@ VmacTransport::send(const Block& wire)
 void
 VmacTransport::send(const Block& header, const Block& payload)
 {
-  NDN_LOG_DEBUG("Sending VMAC");
-  send_vmac(0,0,0,"send_data",9,"send_interest",13);
+  //NDN_LOG_DEBUG("Sending VMAC");
+  //send_vmac(0,0,0,"send_data",9,"send_interest",13);
   /*
   BOOST_ASSERT(m_impl != nullptr);
   m_impl->send(header, payload);
