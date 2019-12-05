@@ -161,7 +161,8 @@ def configure(conf):
 	    conf.env['HAVE_LIBPTHREAD'] = True
         if conf.check_cxx(name='libm', lib='m', uselib_store='LIBM', define_name='HAVE_LIBM', mandatory=True, errmsg='not found, but required for vmac face support. '):
 	    conf.env['HAVE_LIBM'] = True
-        if conf.check_cxx(name='libvmac', lib='vmac', uselib_store='LIBVMAC', define_name='HAVE_LIBVMAC', mandatory=True, errmsg='not found, but required for vmac face support. '):
+        if conf.check_cxx(name='libvmac', lib='vmac', uselib_store='LIBVMAC', define_name='HAVE_LIBVMAC',
+          mandatory=True, use='LIBPTHREAD LIBM', errmsg='not found, but required for vmac face support. '):
 	    conf.env['HAVE_LIBVMAC'] = True
 
 def build(bld):
