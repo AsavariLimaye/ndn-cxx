@@ -134,7 +134,7 @@ VmacTransport::send(const Block& wire, const std::string name)
 
   if (buff_len < 2000){
     NDN_LOG_DEBUG("send : Sending Interest " << name);
-    send_vmac(0, 0, 0, (char*) buffptr, (uint16_t) buff_len, (char*) interest_name, (uint16_t) interest_len);
+    send_vmac(0, 0, 0, (char*) enc_buffer.buf(), (uint16_t) buff_len, (char*) interest_name, (uint16_t) interest_len);
   }
   /*
   BOOST_ASSERT(m_impl != nullptr);
