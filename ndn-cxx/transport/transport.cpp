@@ -29,6 +29,12 @@ Transport::Error::Error(const boost::system::error_code& code, const std::string
 }
 
 void
+Transport::send(const Block& wire, const std::string name)
+{
+  send(wire);
+}
+
+void
 Transport::connect(boost::asio::io_service& ioService, ReceiveCallback receiveCallback)
 {
   BOOST_ASSERT(receiveCallback != nullptr);

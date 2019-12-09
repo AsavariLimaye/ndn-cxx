@@ -24,20 +24,9 @@
 
 #include "ndn-cxx/transport/transport.hpp"
 #include "ndn-cxx/util/config-file.hpp"
-
-//#include <boost/asio/local/stream_protocol.hpp>
+#include <boost/signals2.hpp>
 
 namespace ndn {
-/*
-namespace detail {
-
-template<typename BaseTransport, typename Protocol>
-class StreamTransportImpl;
-
-} // namespace detail
-*/
-/** \brief a transport using Unix stream socket
- */
 class VmacTransport : public Transport
 {
 public:
@@ -77,16 +66,11 @@ public:
   static shared_ptr<VmacTransport>
   create(const std::string& uri);
 
-//NDN_CXX_PUBLIC_WITH_TESTS_ELSE_PRIVATE:
-//  static std::string
-//  getSocketNameFromUri(const std::string& uri);
+  static boost::signals2::signal<void (uint8_t type,uint64_t enc, char* buff, uint16_t len, uint16_t seq, char* interestName, uint16_t interestNameLen)> m_signal;
+private:
+  static bool m_isRegistered;
 
-//private:
-  //std::string m_vmacSocket;
-
-  //using Impl = detail::StreamTransportImpl<VmacTransport, boost::asio::local::stream_protocol>;
-  //friend Impl;
-  //shared_ptr<Impl> m_impl;
+  void vmacCallback(uint8_t type,uint64_t enc, char* buff, uint16_t len, uint16_t seq, char* interestName, uint16_t interestNameLen);
 };
 
 } // namespace ndn

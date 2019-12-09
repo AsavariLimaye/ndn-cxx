@@ -70,7 +70,7 @@ public:
   /** \brief send a TLV block through the transport
    */
   virtual void
-  send(const Block& wire, const std::string name) {};
+  send(const Block& wire, const std::string name);
 
   /** \brief send two memory blocks through the transport
    *
